@@ -27,13 +27,35 @@ router.get("/user/:userId", (req, res, next) => {
     });
 });
 
+router.get("/", (req, res, next) => {
+  Order
+  .find()
+  .exec()
+  .then(docs => {
+    console.log(docs);
+      if (docs.length >= 0) {
+    res.status(200).json(docs);
+      } else {
+          res.status(404).json({
+              message: 'No entries found'
+          });
+      }
+  })
+  .catch(err => {
+    console.log('get all' , err);
+    res.status(500).json({
+      error: err
+    });
+  });
+});
 
 router.get("/:orderId", (req, res, next) => {
-    const id = req.params.orderId;
+    const id = req.params.orderId;    
     Order
-    .find({_id : id})
+    .find({ _id : id })
     .exec()
-    .then(docs => {      
+    .then(docs => {     
+      console.log('orderId', docs); 
         if (docs.length >= 0) 
         {
           res.status(200).json(docs);
@@ -51,6 +73,22 @@ router.get("/:orderId", (req, res, next) => {
     });
 });
 
+router.delete("/:orderId", (req, res, next) => {
+  const id = req.params.orderId;    
+  Order
+  .collection
+  .deleteOne({ _id : id })
+  .then(docs => {   
+    console.log(docs);      
+    res.status(200).json(docs);      
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({
+      error: err
+    });
+  });
+});
 
 router.post("/", (req, res, next) => {
     let productItems =[];
@@ -87,26 +125,6 @@ router.post("/", (req, res, next) => {
 });
 
 
-router.get("/", (req, res, next) => {
-  Order
-  .find()
-  .exec()
-  .then(docs => {
-    console.log(docs);
-      if (docs.length >= 0) {
-    res.status(200).json(docs);
-      } else {
-          res.status(404).json({
-              message: 'No entries found'
-          });
-      }
-  })
-  .catch(err => {
-    console.log(err);
-    res.status(500).json({
-      error: err
-    });
-  });
-});
+
 
 module.exports = router;
