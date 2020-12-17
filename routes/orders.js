@@ -76,7 +76,6 @@ router.get("/:orderId", (req, res, next) => {
 router.delete("/:orderId", (req, res, next) => {
   const id = req.params.orderId;    
   Order
-  .collection
   .deleteOne({ _id : id })
   .then(docs => {   
     console.log(docs);      
