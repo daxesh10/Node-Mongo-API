@@ -8,6 +8,7 @@ const usersRoute = require("./routes/users");
 const indexRoute = require("./routes/index");
 let taskRoute =  require("./routes/tasks.js");
 let productRoute =  require("./routes/products.js");
+let orderRoute = require('./routes/orders.js');
 
 let env = {
     "MONGO_ATLAS_User": "test",
@@ -42,6 +43,7 @@ app.use("/", indexRoute);
 app.use("/api", taskRoute);
 app.use("/api/user", usersRoute);
 app.use("/api/product", productRoute);
+app.use('/api/order',orderRoute);
 
 app.use((req, res, next) => {
   const error = new Error("Not found");
