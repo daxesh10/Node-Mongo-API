@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const User = require("../models/user");
+const User = require("./models/user");
 var fs = require('fs'); 
 var parse = require('csv-parse');
 var _ = require('underscore');
@@ -86,16 +86,22 @@ router.get("/", (req, res, next) => {
 
 
 router.post("/", (req, res, next) => {
-  const user = new Product({
+  const hash = encrypt(req.body.password); 
+  console.log('creating user', req.body);
+  const user = new User({
    _id: new mongoose.Types.ObjectId(),
     First_Name: req.body.firstName,
     Last_Name: req.body.lastName,
     Email: req.body.email,
-    Password: req.body.password,
+    Password: {
+      iv:  hash.iv,
+      content:  hash.content,
+    },
     Gender: req.body.gender,
-    Phone_Number: req.body.phone,
-    Credit_Card_Number: req.body.cardNo,
+    Phone_Number: req.body.phoneNumber,
+    Credit_Card_Number: req.body.cardNumber,
   });
+  console.log('creating user', user);
   user
     .save()
     .then(result => {
@@ -114,7 +120,7 @@ router.post("/", (req, res, next) => {
 });
 
 router.get("/:userId", (req, res, next) => {
-  const id = req.params.productId;
+  const id = req.params.userId;
   User
     .findById(id)
     .exec()
@@ -134,25 +140,32 @@ router.get("/:userId", (req, res, next) => {
     });
 });
 
-router.patch("/:userId", (req, res, next) => {
-  const id = req.params.productId;  
-  const updateUserPayload = new Product({
+router.put("/:userId", (req, res, next) => {
+  const id = req.params.userId;  
+  const hash = encrypt(req.body.password); 
+  const updateUserPayload = new User({
     _id: id,
      First_Name: req.body.firstName,
      Last_Name: req.body.lastName,
      Email: req.body.email,
-     Password: req.body.password,
+     Password: {
+      iv:  hash.iv,
+      content:  hash.content,
+    },
      Gender: req.body.gender,
-     Phone_Number: req.body.phone,
-     Credit_Card_Number: req.body.cardNo,
+     Phone_Number: req.body.phoneNumber,
+     Credit_Card_Number: req.body.cardNumber,
    });
-  
+  console.log('patch', updateUserPayload);
   User
     .update({ _id: id }, { $set: updateUserPayload })
     .exec()
     .then(result => {
-      console.log(result);
-      res.status(200).json(result);
+      console.log('router.patch' , result);
+      res.status(200).json({
+        message: "Handling POST requests to /users",
+        updatedUser: updateUserPayload
+      });
     })
     .catch(err => {
       console.log(err);

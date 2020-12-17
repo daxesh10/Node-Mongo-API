@@ -4,10 +4,10 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
-const usersRoute = require("./api/routes/users");
-const indexRoute = require("./api/routes/index");
-let taskRoute =  require("./api/routes/tasks.js");
-let productRoute =  require("./api/routes/products.js");
+const usersRoute = require("./routes/users");
+const indexRoute = require("./routes/index");
+let taskRoute =  require("./routes/tasks.js");
+let productRoute =  require("./routes/products.js");
 
 let env = {
     "MONGO_ATLAS_User": "test",

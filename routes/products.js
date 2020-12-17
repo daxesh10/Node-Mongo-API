@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const Product = require("../models/product");
+const Product = require("./models/product");
 var fs = require('fs'); 
 var parse = require('csv-parse');
 var _ = require('underscore');
@@ -52,8 +52,7 @@ Product.find()
 router.get("/", (req, res, next) => {
   Product.find()
     .exec()
-    .then(docs => {
-      console.log(docs);
+    .then(docs => {      
         if (docs.length >= 0) {
       res.status(200).json(docs);
         } else {
