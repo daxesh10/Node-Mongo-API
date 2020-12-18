@@ -69,6 +69,28 @@ router.get("/", (req, res, next) => {
     });
 });
 
+router.get("/search/:name", (req, res, next) => {
+  const name = req.params.name;
+  Product
+    .find({Drug_Name: { $lte: name } })
+    .exec()
+    .then(docs => {      
+        if (docs.length >= 0) {
+      res.status(200).json(docs);
+        } else {
+            res.status(404).json({
+                message: 'No entries found'
+            });
+        }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
+});
+
 
 router.post("/", (req, res, next) => {
   const product = new Product({
